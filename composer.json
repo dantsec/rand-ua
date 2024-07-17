@@ -1,0 +1,19 @@
+{
+    "name": "dant/rand-ua",
+    "description": "A pure PHP library that generates random user-agents for different browsers and devices, making it easier to simulate various user environments in your applications.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Dant\\RandUa\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "dantsec",
+            "email": "dantsec@proton.me"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
