@@ -10,7 +10,7 @@ class UserAgentGenerator
      * 
      * @var array
      */
-    protected $browsers = [
+    private $browsers = [
         'chrome' => __DIR__ . '/user-agents/chrome.txt',
         'edge' => __DIR__ . '/user-agents/edge.txt',
         'firefox' => __DIR__ . '/user-agents/firefox.txt',
@@ -39,8 +39,23 @@ class UserAgentGenerator
      * @param array $content The array from which to select a random element.
      * @return string The randomly selected element from the array, or an empty string if the array is empty.
      */
-    private function getRandomElementFromArray(array $content = []): string {
+    private function getRandomElementFromArray(array $content = []): string
+    {
         return $content[rand(0, count($content) - 1)];
+    }
+
+    /**
+     * Opens a user agent file and returns its contents as an array.
+     *
+     * @param string $browser The name of the browser whose user agent file should be opened.
+     * @return array An array of strings, each representing a user agent string from the file.
+     */
+    private function openUserAgentFile(string $browser = ''): array
+    {
+        return file(
+            $this->browsers[$browser],
+            FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES
+        );
     }
 
     /**
@@ -49,9 +64,7 @@ class UserAgentGenerator
      * This method retrieves a user-agent string for a specified operating system (optional)
      * and browser (default is 'chrome'). It reads user-agent strings from a file associated
      * with the specified browser. If an operating system is provided, it filters out user-agent
-     * strings that do not contain the specified OS substring before returning a random one.
-     * If no matching user-agents are found for the OS, a random user-agent for the specified
-     * browser is returned.
+     * strings that contain the specified OS substring before returning a random one.
      *
      * Example usage:
      * ```
@@ -64,14 +77,11 @@ class UserAgentGenerator
      */
     public function getUserAgent(string $os = '', string $browser = 'chrome'): string
     {
-        $agents = file(
-            $this->browsers[$browser],
-            FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES
-        );
+        $agents = $this->openUserAgentFile($browser);
 
         if ($os) {
             $agents = array_filter($agents, function ($ua) use ($os) {
-                return strpos($ua, $os) === false;
+                return strpos($ua, $os) == true;
             });
         }
 
@@ -99,10 +109,7 @@ class UserAgentGenerator
 
         $rand_browser = $this->getRandomElementFromArray($avaiable_browsers);
 
-        $agents = file(
-            $this->browsers[$rand_browser],
-            FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES
-        );
+        $agents = $this->openUserAgentFile($rand_browser);
 
         return $this->getRandomElementFromArray($agents);
     }
