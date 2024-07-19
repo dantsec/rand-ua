@@ -59,24 +59,37 @@ class UserAgentGenerator
     }
 
     /**
-     * Retrieves a user-agent string based on the specified operating system and browser.
+     * Retrieves a random user-agent string based on the specified operating system and browser.
      *
-     * This method retrieves a user-agent string for a specified operating system (optional)
-     * and browser (default is 'chrome'). It reads user-agent strings from a file associated
-     * with the specified browser. If an operating system is provided, it filters out user-agent
-     * strings that contain the specified OS substring before returning a random one.
+     * This method retrieves a user-agent string for a specified browser. If no browser is specified,
+     * it selects a random one from the available browsers. Optionally, you can filter the user-agents
+     * by a specified operating system substring (Windows, Macintosh or X11).
+     * It reads user-agent strings from a file associated with the specified browser, and if an operating system
+     * is provided, it filters the user-agent strings to include only those containing the specified OS substring
+     * before returning a random one.
      *
      * Example usage:
-     * ```
+     * ```php
      * $uagen = UserAgentGenerator::create()->getUserAgent('Windows', 'edge');
      * ```
      *
-     * @param string $os The operating system substring to filter user-agents by (optional).
-     * @param string $browser The name of the browser to retrieve a user-agent for (default is 'chrome').
-     * @return string A randomly selected user-agent string matching the specified criteria.
+     * @param string $os Optional. The substring of the operating system to filter user-agent strings by.
+     *                    If provided, only user-agent strings containing this substring will be considered.
+     *                    If not provided, no filtering by OS is performed.
+     * @param string $browser Optional. The name of the browser to retrieve a user-agent for.
+     *                        If not provided, a random browser from the available list will be selected.
+     *                        Possible values are 'chrome', 'edge', 'firefox', 'opera', 'safari'.
+     * @return string A randomly selected user-agent string that matches the specified criteria.
+     *                If no matching user-agent is found, an empty string may be returned.
      */
-    public function getUserAgent(string $os = '', string $browser = 'chrome'): string
+    public function getUserAgent(string $os = '', string $browser = ''): string
     {
+        if (!$browser) {
+            $avaiable_browsers = array_keys($this->browsers);
+
+            $browser = $this->getRandomElementFromArray($avaiable_browsers);
+        }
+
         $agents = $this->openUserAgentFile($browser);
 
         if ($os) {
