@@ -41,6 +41,10 @@ class UserAgentGenerator
      */
     private function getRandomElementFromArray(array $content = []): string
     {
+        if (empty($content)) {
+            die('The provided array is empty. Cannot select a random element.');
+        }
+
         return $content[rand(0, count($content) - 1)];
     }
 
@@ -52,10 +56,30 @@ class UserAgentGenerator
      */
     private function openUserAgentFile(string $browser = ''): array
     {
-        return file(
-            $this->browsers[$browser],
+        if (!isset($this->browsers[$browser])) {
+            die("Browser key '$browser' does not exist in the browsers array.");
+        }
+
+        $filePath = $this->browsers[$browser];
+
+        if (!file_exists($filePath)) {
+            die("The file '$filePath' does not exist.");
+        }
+
+        if (!is_readable($filePath)) {
+            die("The file '$filePath' is not readable.");
+        }
+
+        $fileContent = file(
+            $filePath,
             FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES
         );
+
+        if (empty($fileContent) || !$fileContent) {
+            die("The file '$filePath' is empty.");
+        }
+
+        return $fileContent;
     }
 
     /**
