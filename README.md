@@ -39,12 +39,21 @@ require __DIR__ . '/vendor/autoload.php';
 // Module namespace.
 use Dant\RandUa\UserAgentGenerator;
 
-// Get user-agent based on specified OS and Browser.
-$specific_ua = UserAgentGenerator::create()->getUserAgent('Windows', 'edge');
-// Get random user-agent.
-$random_ua = UserAgentGenerator::create()->getRandomUserAgent();
+// Get user-agent based on specified OS and Browser (both are optional).
+$specific_ua = UserAgentGenerator::generate()
+    ->setOs('Windows')
+    ->setBrowser('Edge')
+    ->get();
 
-// Possible output: Mozilla/5.0 (Windows NT 10.0) ...
+// Get random user-agent.
+$random_ua = UserAgentGenerator::generate()->get();
+
+echo $specific_ua . PHP_EOL;
+echo $random_ua . PHP_EOL;
+
+// Possible output:
+// Mozilla/5.0 (Windows NT 10.0; Win64; x64) ... Edge/12.246
+// Opera/9.21 (Windows NT 5.1; U; MEGAUPLOAD 1.0; en)
 ```
 
 ## Probabilities of each OS / Browser 🎲
@@ -117,7 +126,7 @@ git clone https://github.com/dantsec/rand-ua.git
 # Enter into the project folder.
 cd rand-ua/
 # Create a new branch with the name feat-[BRANCH_NAME].
-git checkout -b feat-[BRANCH_NAME]
+git checkout -b feat/[BRANCH_NAME]
 # Make your changes and commit them.
 git add . && git commit -m "YOUR_COMMIT_MESSAGE"
 # Push your branch and open a pull request.
